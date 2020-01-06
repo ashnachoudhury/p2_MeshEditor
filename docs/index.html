@@ -1,0 +1,350 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #E4E4E4;
+    background-color: #000000;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 184 Mesh Editor</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+<h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2019</h1>
+<h1 align="middle">Project 2: Mesh Editor</h1>
+<h2 align="middle">Ashna Choudhury</h2>
+
+<br>
+
+<h2 align="middle">Overview</h2>
+<p>In the second project for CS184, we had to build elements of a mesh editor that can successfully display and manipulate 3D mesh objects. This is the core functionality of many mesh editors I am familar with, and it was wonderfully insightful to see how parts of these complex programs are made.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/Man_Shade.png" align="middle" width="300px"/>
+        <!-- <figcaption align="middle">basic/test4.svg.</figcaption> -->
+      </td>
+      <td>
+        <img src="images/Beast_Shade.png" align="middle" width="400px"/>
+       <!--  <figcaption align="middle">illustrations-sun.</figcaption> -->
+      </td>
+    </tr>
+    <br>
+  </table>
+</div>
+
+<div>
+
+<h1 align="middle">Section I: Bezier Curves and Surfaces</h2>
+<br>
+
+<h2 align="middle">Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
+
+<p align="justify">In Part 1, we had to implement a function that could successfully draw Bezier Curves based on de Casteljau's algorithm. This algorithm takes the points of a line and linearly interpolates between them to recursively calculate new points on the curve. We iterate through this process until we are left with only one new point that represents our final, evaluated Bezier Curve. Calculating these curves allows us to take sharp or pointed lines and render them smoothly which becomes immensely useful for mesh editing as we will see in Part 2. Implementing this process required the use of loops to iterate through the interpolation for the necessary number of times, a helper function that calculates the interpolation, and a variable to store and move through the calculated new points. As the algorithm states, once we have reached our final evaluated point (the red dot in the diagram) we know to stop interpolating and draw our Bezier Curve.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/BezierCurve_S1.png" align="middle" width="350px"/>
+        <figcaption align="middle">Original Curve</figcaption>
+      </td>
+      <td>
+        <img src="images/BezierCurve_S2.png" align="middle" width="350px"/>
+        <figcaption align="middle">First Step of de Casteljau's Algorithim</figcaption>
+      </td>
+      <td>
+        <img src="images/BezierCurve_S3.png" align="middle" width="350px"/>
+        <figcaption align="middle">Second Step</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/BezierCurve_S4.png" align="middle" width="350px"/>
+        <figcaption align="middle">Third Step</figcaption>
+      </td>
+       <td>
+        <img src="images/BezierCurve_S5.png" align="middle" width="350px"/>
+        <figcaption align="middle">Fourth Step</figcaption>
+      </td>
+       <td>
+        <img src="images/BezierCurve_S6.png" align="middle" width="350px"/>
+        <figcaption align="middle">Final evaulated point</figcaption>
+      <td>
+    </tr>
+    <br>
+    </table>
+    </div>
+
+    <br><br>
+
+
+    <p align="middle">Calculating Bezier Curves allows us to take sharp or pointed graphs and render them smoothly which becomes immensely useful for mesh editing as we will see in Part 2.</p>
+
+
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/BezierCurve_OnlyCurve.png" align="middle" width="400px"/>
+        <figcaption align="middle">Final Bezier Curve</figcaption>
+      </td>
+      <td>
+        <img src="images/DifferentT.png" align="middle" width="400px"/>
+        <figcaption align="middle">Bezier Curve with a different T value</figcaption>
+      </td>
+    </tr>
+    <br>
+  </table>
+</div>
+
+<div>
+<br>
+
+<h2 align="middle">Part 2: Bezier surfaces with separable 1D de Casteljau subdivision</h3>
+
+<p align="justify">In the previous section, we implemented a function that evaluates Bezier Curves from de Casteljau's algorithm. In this part, we see how this concept becomes helpful in representing 3D meshes. Like before, we still recursively calculate points by linearly interpolating between them, however instead of doing this in a 2D space, we are calculating curves in a 3D space. This requires data types in three dimensions and an extra layer of calculation: we first calculate the Bezier curve between multiple lines, and then find the interpolated result of that curve in the u,v space. In short, the same algorithm, with a few adjustments, allows us to draw curves in 3D and represent different meshes like this elegant teapot and this jazzy cube. </p>
+
+<br>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/Part2_Teapot.png" align="middle" width="450px"/>
+        <!-- <figcaption align="middle">basic/test4.svg.</figcaption> -->
+      </td>
+      <td>
+        <img src="images/Part2_wavycube.png" align="middle" width="400px"/>
+       <!--  <figcaption align="middle">illustrations-sun.</figcaption> -->
+      </td>
+    </tr>
+    <br>
+  </table>
+</div>
+
+
+
+<h1 align="middle">Section II: Sampling</h2>
+
+<h2 align="middle">Part 3: Average normals for half-edge meshes</h3>
+
+<p align="justify">In the second half of the project we are introduced to a data type called the HalfEdge. It allows us to easily traverse our 3D mesh and access all crucial aspects of the object such as faces, vertices, and edges. Using this information, we can implement several functions that are useful for mesh editing and manipulation. In this section, we implemented one such function which takes the average weighted normals at each vertex. To calculate this average, I found the cross product of our "current vertex" and its neighbors, and then iterated through all the vertices in our Halfedge instance to perform this calculation on the entire object. As a result, the 3D meshes appear to have more detailed shading and seemingly smoother topology, giving way to some truly wonderful models.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/Part3_noShade.png" align="middle" width="350px"/>
+        <figcaption align="middle">A teapot without averaged normals</figcaption>
+      </td>
+      <td><td><td>
+        <img src="images/Part3_Shade.png" align="middle" width="350px"/>
+        <figcaption align="middle">A teapot with averaged normals</figcaption>
+      </td>
+    </tr>
+    <br>
+  </table>
+</div>
+<tr>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/Cow_noshade.png" align="middle" width="300px"/>
+        <figcaption align="middle">A beautiful cow</figcaption>
+      </td>
+      <td>
+      <td><td><td><td><td><td><td><td><td><td>
+        <img src="images/Cow_Shade.png" align="middle" width="300px"/>
+        <figcaption align="middle">An even more beautiful cow</figcaption>
+      </td>
+    </tr>
+    <br>
+  </table>
+</div>
+
+<h2 align="middle">Part 4: Half-edge flip</h3>
+
+<p align="justify">The next two parts of the project dealt extensively with the HalfEdge data type and reassignments of pointers and references. In this section, we are supposed to write a function that can flip a selected edge without removing or changing other surrounding edges. Though this sounds simple in theory, the actual process required the use of MANY variables and references to objects in the data type. This meant keeping track of ALL edges, vertices, faces, and HalfEdges that are both in the original mesh and that will be there in the flipped mesh. Of course with this many variables to remember, it's a given that I was going to misrepresent or incorrectly assign some of them. At first, this function didn't flip edges but rather deleted faces! (A useful functionality but not the one we wanted).</p>
+
+<p align="justify"> After some double checking into my assignments, faces were no longer being erased, but the edges were still not flipping properly: sometimes they would produce a duplicate edge that overlaps the original, other times it wouldn't flip anything until the second or third time I pressed the key. It was all baffling to me, and I never thought I'd be able to pinpoint the problems, until I realized that the pictures I had drawn in the beginning were all wrong to start with: instead of flipping only one edge in the HalfEdge, I was flipping the entire HalfEdge. With that revelation, I was able to rename and reassign my pointers properly, and as a result we have a teapot that beautifully flips edges (without deleting faces)! </p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/Part4_noFlip.png" align="middle" width="450px"/>
+        <figcaption align="middle">A teapot with standard edges</figcaption>
+      </td>
+      <td>
+        <img src="images/Part4_Flip.png" align="middle" width="400px"/>
+        <figcaption align="middle">A teapot with flipped edges</figcaption>
+      </td>
+    </tr>
+    <br>
+  </table>
+</div>
+
+
+<h2 align="middle">Part 5: Half-edge split</h3>
+
+<p align="justify">Similar to the previous section, this part involved an impressive number of variables and reassignments. Instead of flipping one edge however, this time we have to correctly insert several new edges, faces, and vertices and still reassign our HalfEdges correctly. The process was certainly long, but thankfully, after the learning experience of the previous part, I better understood the Halfedge data type and the operations we are performing on it. This meant that I just needed to be EXTREMELY careful about my diagrams and the way I implemented them. Of course, I inevitably made some reassigning errors in the process. One error I had was in the deleting of some edges I thought we would no longer need at the end. Interestingly, this didn't cause any problems for testing this part, however, it caused some segmentation fault errors in the next part in which the original edge that is split becomes VERY important. After making some adjustments to that implementation, the splitting WORKED and allowed for some interesting results in the mesh, especially with the combination of flipping and splitting. Though the functionality of flipping and splitting edges doesn't seem apparent right now, they become extremely useful in the last part.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/BeforeSplit.png" align="middle" width="400px"/>
+        <figcaption align="middle">Before Split Operation </figcaption>
+      </td>
+      <td><td><td><td><td>
+        <img src="images/AfterSplit.png" align="middle" width="400px"/>
+        <figcaption align="middle">After Split Operation</figcaption>
+      </td>
+    </tr>
+    <br>
+    </table>
+    </div>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/Before.png" align="middle" width="400px"/>
+        <figcaption align="middle">Before Split & Flip Operations</figcaption>
+      </td>
+      <td><td><td><td><td>
+        <img src="images/After.png" align="middle" width="400px"/>
+        <figcaption align="middle">After Split & Flip Operations</figcaption>
+      </td>
+    </tr>
+    <br>
+    </table>
+    </div>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+     <td>
+        <img src="images/Closeup.png" align="middle" width="450px"/>
+        <figcaption align="middle">Closeup of Mesh</figcaption>
+      </td>
+       </tr>
+    <br>
+  </table>
+</div>
+
+<br><br>
+
+<h2 align="middle">Part 6: Loop subdivision for mesh upsampling</h3>
+
+<p align="justify">In the final part of the project, we implemented mesh subdivision utilizing the functions we wrote in parts 4 and 5. This function was certainly trickier than most of the other parts and it required many thorough steps of looping through the objects vertices and edges, performing the proper operations, and reassigning the positions of the necessary aspects. First, we needed to label what was part of the "original" mesh so that we can keep track of what needs to be split and flipped. Then, we calculated the new positions of the vertices and edges that will be created in the process. Once we have this information, we went through the object and applyed the split and flip operations where it was appropriate on the mesh (where there were the proper number of "new" and "old" vertices or edges). If all of these steps are implemented properly then get the functionality of the pictures below. With each increasing level of subdivisions, the original object is smoothed and rounded at the edges, and becomes increasingly smaller. This represents an object being upsampled in 3D space.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/Loop1.png" align="middle" width="240px"/>
+        <figcaption align="middle">Original Mesh</figcaption>
+      </td>
+      <td>
+        <img src="images/Loop2.png" align="middle" width="250px"/>
+        <figcaption align="middle">Subdivision Level 1</figcaption>
+      </td>
+      <td>
+        <img src="images/Loop3.png" align="middle" width="250px"/>
+        <figcaption align="middle">Subdivision Level 2</figcaption>
+      </td>
+       <td>
+        <img src="images/Loop4.png" align="middle" width="250px"/>
+        <figcaption align="middle">Subdivision Level 3</figcaption>
+      </td>
+    </tr>
+    <br>
+    </table>
+    </div>
+
+<br><br>
+<p align="middle">Of course, as with anything in this project, if one small thing was off, then the results would not be as pretty. For example, this accidentally made, crumpled paper was the result of my new edges being incorrectly calculated and assigned.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+     <td>
+        <img src="images/error.png" align="middle" width="400px"/>
+        <figcaption align="middle">The result of some artistic miscalculations</figcaption>
+      </td>
+       </tr>
+    <br>
+  </table>
+</div>
+
+<br><br>
+
+<p align="justify">Another interesting result is that the object would slowly become more asymmetrical as it was further subdivided. Though perhaps unintentional, it could be manipulated and changed by splitting and flipping edges before the subdivision operations are performed. With a different topology and extra edge information around the sides, the subdivisions become more symmetrical than before. For example, in the pictures below, we can see that the mesh on the bottom that did not have any edge manipulation prior to the subdivision is more lop-sided than the one on the top which did have several edge flips and splits before subdividing. In the end, the same original object has a different end result due to the topology changes we made in the beginning.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/Loop_S5.png" align="middle" width="350px"/>
+        <figcaption align="middle">Subdividing without edge manipulation</figcaption>
+      </td>
+      <td>
+      <tr>
+        <img src="images/Loop5.png" align="middle" width="300px"/>
+        <figcaption align="middle">Subdividing with edge manipulation</figcaption>
+      </td>
+    </tr>
+    <br>
+    </table>
+    </div>
+
+<h1 align="middle">Section III: Mesh Competition</h2>
+
+<h2 align="middle">Part 7: Design your own mesh!</h3>
+
+<p align="middle">For the art competition, I decided to make a 3D model of Beast from Beauty and the Beast. Using modeling softwares like Maya and Zbrush, I sculpted the shape of the head and brought the model into the Mesh Editor I made for this project.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+      <tr>
+        <img src="images/Front.png" align="middle" width="400px"/>
+        <figcaption align="middle">Beast-Wireframe</figcaption>
+      </td>
+      <td>
+        <img src="images/Quarter_NoWire.png" align="middle" width="500px"/>
+        <figcaption align="middle">Beast-Front</figcaption>
+      </td>
+      <td>
+        <img src="images/Side.png" align="middle" width="450px"/>
+        <figcaption align="middle">Beast-Side</figcaption>
+      </td>
+    </tr>
+    <br>
+    </table>
+    </div>
+
+
+</body>
+</html>
